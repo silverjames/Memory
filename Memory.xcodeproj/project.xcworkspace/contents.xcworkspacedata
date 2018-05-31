@@ -2,24 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Bernhard.jpg">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Ildiko.jpg">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Juliana.jpg">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Kathi.jpg">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Marie.jpg">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/bernhard/Developer/Memory/Memory/supporting files/Teresa.jpg">
-   </FileRef>
-   <FileRef
       location = "self:Memory.xcodeproj">
    </FileRef>
 </Workspace>

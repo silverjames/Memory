@@ -46,9 +46,10 @@ class MemoryViewController: UIViewController {
         for button in view.subviews{
             if button is UIButton {
                 //button.backgroundColor = UIColor.clearColor()
-                button.layer.cornerRadius = 5
+                button.layer.cornerRadius = 10
                 button.layer.borderWidth = 0.1
                 button.layer.borderColor = UIColor.gray.cgColor
+                
             }
         }
     }
@@ -58,65 +59,32 @@ class MemoryViewController: UIViewController {
     //******************************
     @IBAction func touchCard(_ sender: UIButton) {
 
-        var status = (true, true, true, 999, 999)
+//        var status = (true, true, true, 999, 999)
         let index = memoryButtons.index(of: sender)
         
         if index != nil{
-            status = game.cardTouch(cardIndex: index!)
-        
-            switch status {
-            case (true, false, false, _, _):
-                print("vc:first turn detected")
-                print("card with index \(String(describing: index))and \(game.gameSet[index!].id) id")
-                sender.setImage(imageSet[index!], for: UIControlState.normal)
-                sender.backgroundColor = #colorLiteral(red: 0.5704585314, green: 0.5704723597, blue: 0.5704649091, alpha: 1)
-
-            case (false, true, false, let index0, let index1):
-                print("vc:unmatched pair detected")
-                print("card 1 with index \(String(describing: index0))and id \(game.gameSet[index0].id)")
-                print("card 2 with index \(String(describing: index1))and id \(game.gameSet[index1].id)")
-                memoryButtons[index0].setImage(imageSet[index0], for: UIControlState.normal)
-                memoryButtons[index1].setImage(imageSet[index1], for: UIControlState.normal)
-                memoryButtons[index0].backgroundColor = #colorLiteral(red: 0.5704585314, green: 0.5704723597, blue: 0.5704649091, alpha: 1)
-                memoryButtons[index1].backgroundColor = #colorLiteral(red: 0.5704585314, green: 0.5704723597, blue: 0.5704649091, alpha: 1)
-                _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false, block: {_ in self.releaseMismatchedPair(cardIndex0: index0, cardIndex1: index1)})
-                
-            case (false, false, true, let index0, let index1):
-                print("vc:match detected")
-                print("card 1 with index \(String(describing: index0))and id \(game.gameSet[index0].id)")
-                print("card 2 with index \(String(describing: index1))and id \(game.gameSet[index1].id)")
-                memoryButtons[index0].setImage(imageSet[index0], for: UIControlState.normal)
-                memoryButtons[index1].setImage(imageSet[index1], for: UIControlState.normal)
-                memoryButtons[index0].backgroundColor = #colorLiteral(red: 0.5704585314, green: 0.5704723597, blue: 0.5704649091, alpha: 1)
-                memoryButtons[index1].backgroundColor = #colorLiteral(red: 0.5704585314, green: 0.5704723597, blue: 0.5704649091, alpha: 1)
-                _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false, block: {_ in self.hideMatchedPair(cardIndex0: index0, cardIndex1: index1)})
-
-            default:
-                print("vc:touchCard: undefined status")
+            game.cardTouch(cardIndex: index!)
+            
+            for cardIndex in game.gameSet.indices{
+                if game.gameSet[cardIndex].faceUp{
+                    memoryButtons[cardIndex].setImage(imageSet[cardIndex], for: UIControlState.normal)
+                    memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+                } else{
+                    if !game.gameSet[cardIndex].matched{
+                        memoryButtons[cardIndex].setImage(blankImage, for: UIControlState.normal)
+                        memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+                    }
+                }
             }
+            
+            _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false, block: {_ in self.hideMatchedPairs()})
         }
     }
     
-    func releaseMismatchedPair(cardIndex0: Int, cardIndex1: Int){
-        print("about to turn back over the mismatched pair")
-        memoryButtons[cardIndex0].setImage(blankImage, for: UIControlState.normal)
-        memoryButtons[cardIndex1].setImage(blankImage, for: UIControlState.normal)
-        memoryButtons[cardIndex0].backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-        memoryButtons[cardIndex1].backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-        game.gameSet[cardIndex0].faceUp = false
-        game.gameSet[cardIndex1].faceUp = false
-    }
-
-    func hideMatchedPair(cardIndex0: Int, cardIndex1: Int){
-        print("about to hide the matched pair")
-        memoryButtons[cardIndex0].setImage(blankImage, for: UIControlState.normal)
-        memoryButtons[cardIndex1].setImage(blankImage, for: UIControlState.normal)
-        memoryButtons[cardIndex0].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-        memoryButtons[cardIndex1].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-    }
 
     @IBAction func newGame(_ sender: UIButton) {
         game.newGame(nbrOfCards: memoryButtons.count)
+        _ = fillImageSet()
         shuffle()
         for button in memoryButtons {
             button.setImage(blankImage, for: UIControlState.normal)
@@ -130,15 +98,29 @@ class MemoryViewController: UIViewController {
     //  MARK: class methods
     //******************************
     
+    func hideMatchedPairs(){
+        print("about to hide the matched pairs")
+        for cardIndex in game.gameSet.indices{
+            if game.gameSet[cardIndex].matched{
+                memoryButtons[cardIndex].setImage(blankImage, for: UIControlState.normal)
+                memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+            }
+        }
+        
+    }
+    
     private func fillImageSet() -> Int {
         //  creates one entry for each image - would be nicer if I could find a way to iterate through the available images
+        imageSet.removeAll()
         imageSet.append(UIImage(named: "Bernhard")!)
         imageSet.append(UIImage(named: "Ildiko")!)
         imageSet.append(UIImage(named: "Kathi")!)
         imageSet.append(UIImage(named: "Marie")!)
         imageSet.append(UIImage(named: "Teresa")!)
         imageSet.append(UIImage(named: "Juliana")!)
-        
+        imageSet.append(UIImage(named: "Gerhard")!)
+        imageSet.append(UIImage(named: "Bärbel")!)
+
         //and now copy the cards to have two of each for matching
         for index in 0...imageSet.count-1 {
             imageSet.append(imageSet[index])
