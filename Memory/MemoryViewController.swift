@@ -21,7 +21,8 @@ class MemoryViewController: UIViewController {
     @IBOutlet var gameView: UIView!
     @IBOutlet var memoryButtons: [UIButton]!
     @IBOutlet weak var flipCountDisplay: UILabel!
-    
+    @IBOutlet weak var matchLabel: UILabel!
+
     //******************************
     //  MARK: lifecycle function overrides
     //******************************
@@ -43,13 +44,34 @@ class MemoryViewController: UIViewController {
         for view in gameView.subviews{
             view.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         }
-        for button in view.subviews{
-            if button is UIButton {
+        for subView in view.subviews{
+            if subView is UIButton {
                 //button.backgroundColor = UIColor.clearColor()
-                button.layer.cornerRadius = 10
-                button.layer.borderWidth = 0.1
-                button.layer.borderColor = UIColor.gray.cgColor
-                
+                subView.layer.cornerRadius = 10
+                subView.layer.borderWidth = 0.2
+                subView.mask?.clipsToBounds = true
+                subView.layer.borderColor = UIColor.gray.cgColor
+            } else{
+                if subView is UIStackView{
+                    for stackViews in subView.subviews{
+                        for button in stackViews.subviews{
+                            button.layer.cornerRadius = 10
+                            button.layer.borderWidth = 0.2
+                            button.mask?.clipsToBounds = true
+                            button.layer.borderColor = UIColor.gray.cgColor
+                            button.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+
+                        }
+                    }
+                }
+                if subView is UILabel{
+                    subView.layer.cornerRadius = 10
+                    subView.layer.borderWidth = 0.2
+                    subView.mask?.clipsToBounds = true
+                    subView.layer.borderColor = UIColor.gray.cgColor
+                    subView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+
+                }
             }
         }
     }
@@ -64,7 +86,9 @@ class MemoryViewController: UIViewController {
         
         if index != nil{
             game.cardTouch(cardIndex: index!)
-            
+            flipCountDisplay.text = "umgedrehte Karten: \(game.flipCount)"
+            matchLabel.text = "Treffer: \(game.matchCount)"
+
             for cardIndex in game.gameSet.indices{
                 if game.gameSet[cardIndex].faceUp{
                     memoryButtons[cardIndex].setImage(imageSet[cardIndex], for: UIControlState.normal)
@@ -77,7 +101,7 @@ class MemoryViewController: UIViewController {
                 }
             }
             
-            _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: false, block: {_ in self.hideMatchedPairs()})
+            _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: {_ in self.hideMatchedPairs()})
         }
     }
     
@@ -138,8 +162,4 @@ class MemoryViewController: UIViewController {
         }
     }
 }
-//fileprivate extension Selector {
-//    static let turnBackPair =
-//        #selector(turnBackPair())
-//}
 

@@ -18,6 +18,7 @@ class MemoryGameSet {
 
     var gameSet = [MemoryCard]()
     var flipCount = 0
+    var matchCount = 0
     var onlyOneCardIsFaceUp:Int?
     var indexForTheOneAndOnlyFaceupCard:Int?
     var nbrOfFaceupCards: Int{
@@ -54,17 +55,20 @@ class MemoryGameSet {
                     print("Match!")
                     gameSet[cardIndex].matched = true
                     gameSet[indexForTheOneAndOnlyFaceupCard!].matched = true
+                    matchCount += 1
                 } else {
 
                 }
                 onlyOneCardIsFaceUp = nil
             }
         }
+        flipCount += 1
     }
     
     func newGame(nbrOfCards: Int){
         onlyOneCardIsFaceUp = nil
         flipCount = 0
+        matchCount = 0
         gameSet.removeAll()
 
         for _ in 0...nbrOfCards/2-1 {
@@ -75,10 +79,5 @@ class MemoryGameSet {
             gameSet.append(gameSet[index])
         }
         print("memory set initialized with \(gameSet.count) cards")
-        var counter = 0
-        for card in gameSet {
-            print ("\(counter) - \(card)")
-            counter += 1
-        }
     }
 }

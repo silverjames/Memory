@@ -182,8 +182,17 @@
                                     <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="09u-M8-FWk"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jS4-iN-Fdq">
-                                <rect key="frame" x="166.66666666666666" y="699.66666666666663" width="41.666666666666657" height="20.333333333333371"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" layoutMarginsFollowReadableWidth="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="42.700000000000003" translatesAutoresizingMaskIntoConstraints="NO" id="jS4-iN-Fdq">
+                                <rect key="frame" x="16" y="720" width="0.0" height="0.0"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3fZ-qY-VIC">
+                                <rect key="frame" x="359" y="724" width="0.0" height="0.0"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -191,14 +200,19 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="3fZ-qY-VIC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jS4-iN-Fdq" secondAttribute="trailing" constant="16" id="3rr-j9-nM4"/>
                             <constraint firstItem="27B-h6-iWm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="7gQ-iu-wV9"/>
+                            <constraint firstItem="jS4-iN-Fdq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="8dV-fD-kKx"/>
                             <constraint firstItem="2lc-9C-c0C" firstAttribute="top" secondItem="jS4-iN-Fdq" secondAttribute="bottom" constant="12" id="BsE-oP-wf2"/>
                             <constraint firstItem="jS4-iN-Fdq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="27B-h6-iWm" secondAttribute="bottom" constant="16" id="HgO-Nd-xgY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2lc-9C-c0C" secondAttribute="trailing" constant="16" id="KIt-SX-4zj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="2lc-9C-c0C" secondAttribute="bottom" constant="16" id="N2A-ta-xWH"/>
                             <constraint firstItem="2lc-9C-c0C" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="XzA-wS-Eff"/>
+                            <constraint firstItem="3fZ-qY-VIC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="YZV-Qo-UPu" secondAttribute="bottom" constant="16" id="dvt-gz-mkZ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="27B-h6-iWm" secondAttribute="trailing" constant="16" id="pVv-Kz-LCq"/>
-                            <constraint firstItem="jS4-iN-Fdq" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="rcd-aT-R1F"/>
+                            <constraint firstItem="2lc-9C-c0C" firstAttribute="top" secondItem="3fZ-qY-VIC" secondAttribute="bottom" constant="8" id="qFx-ma-hyN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3fZ-qY-VIC" secondAttribute="trailing" constant="16" id="qvR-u3-3La"/>
+                            <constraint firstItem="3fZ-qY-VIC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" symbolic="YES" id="rdm-rz-hyI"/>
                             <constraint firstItem="27B-h6-iWm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="u5c-0x-FFk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -206,6 +220,7 @@
                     <connections>
                         <outlet property="flipCountDisplay" destination="jS4-iN-Fdq" id="jlY-fp-ciD"/>
                         <outlet property="gameView" destination="8bC-Xf-vdC" id="GFk-Sa-BsG"/>
+                        <outlet property="matchLabel" destination="3fZ-qY-VIC" id="nJw-LP-TT8"/>
                         <outletCollection property="memoryButtons" destination="3UX-Se-HSS" collectionClass="NSMutableArray" id="xUz-86-LlK"/>
                         <outletCollection property="memoryButtons" destination="HNf-CE-P4d" collectionClass="NSMutableArray" id="mUf-cI-7Ab"/>
                         <outletCollection property="memoryButtons" destination="J4Q-Wy-wCk" collectionClass="NSMutableArray" id="UsW-jT-O95"/>
