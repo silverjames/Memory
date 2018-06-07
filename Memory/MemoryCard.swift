@@ -9,8 +9,8 @@
 
 import Foundation
 
-struct MemoryCard {
-    var id: Int
+struct MemoryCard: Hashable {
+    private var id: Int
     var faceUp: Bool = false
     var matched: Bool = false
 
@@ -18,6 +18,10 @@ struct MemoryCard {
     static func uniqueIdentifierFactory(){
         uniqueIdentifier += 1
     }
+    static func == (lhc:MemoryCard, rhc:MemoryCard) -> Bool{
+        return lhc.id == rhc.id
+    }
+    
     init(){
         id = MemoryCard.uniqueIdentifier
         faceUp = false

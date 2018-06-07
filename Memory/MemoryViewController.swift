@@ -14,9 +14,9 @@ class MemoryViewController: UIViewController {
     //  MARK: properties and outlets
     //******************************
 
-    var blankImage:UIImage? = nil
+    private var blankImage:UIImage? = nil
     lazy var game = MemoryGameSet(1)
-    var imageSet:[UIImage] = []
+    private var imageSet:[UIImage] = []
 
     @IBOutlet var gameView: UIView!
     @IBOutlet var memoryButtons: [UIButton]!
@@ -122,7 +122,7 @@ class MemoryViewController: UIViewController {
     //  MARK: class methods
     //******************************
     
-    func hideMatchedPairs(){
+    private func hideMatchedPairs(){
         print("about to hide the matched pairs")
         for cardIndex in game.gameSet.indices{
             if game.gameSet[cardIndex].matched{

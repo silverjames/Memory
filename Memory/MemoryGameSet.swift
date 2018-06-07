@@ -19,9 +19,9 @@ class MemoryGameSet {
     var gameSet = [MemoryCard]()
     var flipCount = 0
     var matchCount = 0
-    var onlyOneCardIsFaceUp:Int?
-    var indexForTheOneAndOnlyFaceupCard:Int?
-    var nbrOfFaceupCards: Int{
+    private var onlyOneCardIsFaceUp:MemoryCard?
+    private var indexForTheOneAndOnlyFaceupCard:Int?
+    private var nbrOfFaceupCards: Int{
         get {
             let faceUpSet = gameSet.filter {$0.faceUp == true}
             return faceUpSet.count
@@ -31,7 +31,7 @@ class MemoryGameSet {
     //******************************
     //  MARK: class methods
     //******************************
-     init(_ withNbrOfCards: Int) {
+    init(_ withNbrOfCards: Int) {
         newGame(nbrOfCards: withNbrOfCards)
     }
     
@@ -48,10 +48,10 @@ class MemoryGameSet {
             }
 
             if onlyOneCardIsFaceUp == nil{
-                onlyOneCardIsFaceUp = gameSet[cardIndex].id
+                onlyOneCardIsFaceUp = gameSet[cardIndex]
                 indexForTheOneAndOnlyFaceupCard = cardIndex
             } else {//check for match
-                if onlyOneCardIsFaceUp! == gameSet[cardIndex].id {// match!
+                if onlyOneCardIsFaceUp! == gameSet[cardIndex] {// match!
                     print("Match!")
                     gameSet[cardIndex].matched = true
                     gameSet[indexForTheOneAndOnlyFaceupCard!].matched = true
