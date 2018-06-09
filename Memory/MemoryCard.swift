@@ -13,6 +13,7 @@ struct MemoryCard: Hashable {
     private var id: Int
     var faceUp: Bool = false
     var matched: Bool = false
+    var hasBeenTurned: Bool = false
 
     static var uniqueIdentifier = 0
     static func uniqueIdentifierFactory(){

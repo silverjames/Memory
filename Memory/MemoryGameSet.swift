@@ -19,6 +19,7 @@ class MemoryGameSet {
     var gameSet = [MemoryCard]()
     var flipCount = 0
     var matchCount = 0
+    var gameScore = 0
     private var onlyOneCardIsFaceUp:MemoryCard?
     private var indexForTheOneAndOnlyFaceupCard:Int?
     private var nbrOfFaceupCards: Int{
@@ -56,7 +57,16 @@ class MemoryGameSet {
                     gameSet[cardIndex].matched = true
                     gameSet[indexForTheOneAndOnlyFaceupCard!].matched = true
                     matchCount += 1
+                    gameScore += 2
                 } else {
+                    if gameSet[cardIndex].hasBeenTurned == false {
+                        gameSet[cardIndex].hasBeenTurned = true
+                    } else {gameScore -= 1}
+                    if gameSet[indexForTheOneAndOnlyFaceupCard!].hasBeenTurned == false {
+                        gameSet[indexForTheOneAndOnlyFaceupCard!].hasBeenTurned = true
+                    } else {gameScore -= 1}
+
+                    gameSet[indexForTheOneAndOnlyFaceupCard!].hasBeenTurned = true
 
                 }
                 onlyOneCardIsFaceUp = nil
@@ -69,6 +79,7 @@ class MemoryGameSet {
         onlyOneCardIsFaceUp = nil
         flipCount = 0
         matchCount = 0
+        gameScore = 0
         gameSet.removeAll()
 
         for _ in 0...nbrOfCards/2-1 {

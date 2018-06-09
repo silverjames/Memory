@@ -22,6 +22,7 @@ class MemoryViewController: UIViewController {
     @IBOutlet var memoryButtons: [UIButton]!
     @IBOutlet weak var flipCountDisplay: UILabel!
     @IBOutlet weak var matchLabel: UILabel!
+    @IBOutlet weak var gameScore: UILabel!
 
     //******************************
     //  MARK: lifecycle function overrides
@@ -81,13 +82,13 @@ class MemoryViewController: UIViewController {
     //******************************
     @IBAction func touchCard(_ sender: UIButton) {
 
-//        var status = (true, true, true, 999, 999)
         let index = memoryButtons.index(of: sender)
         
         if index != nil{
             game.cardTouch(cardIndex: index!)
             flipCountDisplay.text = "umgedrehte Karten: \(game.flipCount)"
             matchLabel.text = "Treffer: \(game.matchCount)"
+            gameScore.text = "Score: \(game.gameScore)"
 
             for cardIndex in game.gameSet.indices{
                 if game.gameSet[cardIndex].faceUp{
@@ -144,6 +145,10 @@ class MemoryViewController: UIViewController {
         imageSet.append(UIImage(named: "Juliana")!)
         imageSet.append(UIImage(named: "Gerhard")!)
         imageSet.append(UIImage(named: "Bärbel")!)
+        imageSet.append(UIImage(named: "Werner")!)
+        imageSet.append(UIImage(named: "Thea")!)
+        imageSet.append(UIImage(named: "Christina")!)
+        imageSet.append(UIImage(named: "Kitty")!)
 
         //and now copy the cards to have two of each for matching
         for index in 0...imageSet.count-1 {
@@ -155,11 +160,16 @@ class MemoryViewController: UIViewController {
     private func shuffle(){
         var last = imageSet.count - 1
         while last > 0 {
-            let rand = Int(arc4random_uniform(UInt32(last)))
-            imageSet.swapAt(last, rand)
-            game.gameSet.swapAt(last, rand)
+            let rnd = last.arc4Random
+            imageSet.swapAt(last, rnd)
+            game.gameSet.swapAt(last, rnd)
             last -= 1
         }
     }
 }
 
+extension Int {
+    var arc4Random: Int {
+        return Int(arc4random_uniform(UInt32(self)))
+    }
+}
