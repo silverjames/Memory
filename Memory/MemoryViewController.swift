@@ -55,13 +55,14 @@ class MemoryViewController: UIViewController {
             } else{
                 if subView is UIStackView{
                     for stackViews in subView.subviews{
-                        for button in stackViews.subviews{
+                        for view in stackViews.subviews{
+                            let button = view as! UIButton
                             button.layer.cornerRadius = 10
                             button.layer.borderWidth = 0.2
                             button.mask?.clipsToBounds = true
                             button.layer.borderColor = UIColor.gray.cgColor
+                            button.setImage(UIImage(named: "cardback"), for: UIControl.State.normal)
                             button.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
-
                         }
                     }
                 }
@@ -92,11 +93,12 @@ class MemoryViewController: UIViewController {
 
             for cardIndex in game.gameSet.indices{
                 if game.gameSet[cardIndex].faceUp{
-                    memoryButtons[cardIndex].setImage(imageSet[cardIndex], for: UIControlState.normal)
+                    memoryButtons[cardIndex].setImage(imageSet[cardIndex], for: UIControl.State.normal)
                     memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
                 } else{
                     if !game.gameSet[cardIndex].matched{
-                        memoryButtons[cardIndex].setImage(blankImage, for: UIControlState.normal)
+                        memoryButtons[cardIndex].setImage(blankImage, for: UIControl.State.normal)
+                        memoryButtons[cardIndex].setImage(UIImage(named: "cardback"), for: UIControl.State.normal)
                         memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
                     }
                 }
@@ -112,7 +114,7 @@ class MemoryViewController: UIViewController {
         _ = fillImageSet()
         shuffle()
         for button in memoryButtons {
-            button.setImage(blankImage, for: UIControlState.normal)
+            button.setImage(UIImage(named: "cardback"), for: UIControl.State.normal)
             button.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         }
         
@@ -127,7 +129,7 @@ class MemoryViewController: UIViewController {
         print("about to hide the matched pairs")
         for cardIndex in game.gameSet.indices{
             if game.gameSet[cardIndex].matched{
-                memoryButtons[cardIndex].setImage(blankImage, for: UIControlState.normal)
+                memoryButtons[cardIndex].setImage(blankImage, for: UIControl.State.normal)
                 memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
             }
         }
