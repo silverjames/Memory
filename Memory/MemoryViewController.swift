@@ -93,8 +93,13 @@ class MemoryViewController: UIViewController {
 
             for cardIndex in game.gameSet.indices{
                 if game.gameSet[cardIndex].faceUp{
-                    memoryButtons[cardIndex].setImage(imageSet[cardIndex], for: UIControl.State.normal)
-                    memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+                    UIView.transition(with: sender,
+                                      duration: 0.6,
+                                      options: [.transitionFlipFromLeft],
+                                      animations: {
+                                        self.memoryButtons[cardIndex].setImage(self.imageSet[cardIndex], for: UIControl.State.normal)
+                                        self.memoryButtons[cardIndex].backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+                                      })
                 } else{
                     if !game.gameSet[cardIndex].matched{
                         memoryButtons[cardIndex].setImage(blankImage, for: UIControl.State.normal)
