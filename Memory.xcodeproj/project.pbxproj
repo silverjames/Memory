@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F95810320FE5CE0002FE82D /* MemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F95810220FE5CE0002FE82D /* MemoryView.swift */; };
+		6F95810520FE5DA0002FE82D /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F95810420FE5DA0002FE82D /* Grid.swift */; };
 		6FD0411220B3E2210045BCC5 /* MemoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD0411120B3E2210045BCC5 /* MemoryCard.swift */; };
 		6FD0411420B3E72D0045BCC5 /* MemoryGameSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD0411320B3E72D0045BCC5 /* MemoryGameSet.swift */; };
 		6FD5DAE020B1CE2200F48BEE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5DADF20B1CE2200F48BEE /* AppDelegate.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F95810220FE5CE0002FE82D /* MemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryView.swift; sourceTree = "<group>"; };
+		6F95810420FE5DA0002FE82D /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		6FD0411120B3E2210045BCC5 /* MemoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCard.swift; sourceTree = "<group>"; };
 		6FD0411320B3E72D0045BCC5 /* MemoryGameSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameSet.swift; sourceTree = "<group>"; };
 		6FD5DADC20B1CE2200F48BEE /* Memory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Memory.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,6 +67,8 @@
 				6FD0411120B3E2210045BCC5 /* MemoryCard.swift */,
 				6FD0411320B3E72D0045BCC5 /* MemoryGameSet.swift */,
 				6FD5DAE320B1CE2200F48BEE /* Main.storyboard */,
+				6F95810220FE5CE0002FE82D /* MemoryView.swift */,
+				6F95810420FE5DA0002FE82D /* Grid.swift */,
 				6FD5DAF120B2166A00F48BEE /* supporting files */,
 				6FD5DAE620B1CE2400F48BEE /* Assets.xcassets */,
 			);
@@ -152,8 +158,10 @@
 			files = (
 				6FD5DAE220B1CE2200F48BEE /* MemoryViewController.swift in Sources */,
 				6FD0411420B3E72D0045BCC5 /* MemoryGameSet.swift in Sources */,
+				6F95810320FE5CE0002FE82D /* MemoryView.swift in Sources */,
 				6FD5DAE020B1CE2200F48BEE /* AppDelegate.swift in Sources */,
 				6FD0411220B3E2210045BCC5 /* MemoryCard.swift in Sources */,
+				6F95810520FE5DA0002FE82D /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

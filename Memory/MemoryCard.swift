@@ -10,23 +10,45 @@
 import Foundation
 
 struct MemoryCard: Hashable {
-    private var id: Int
-    var faceUp: Bool = false
-    var matched: Bool = false
-    var hasBeenTurned: Bool = false
 
     static var uniqueIdentifier = 0
     static func uniqueIdentifierFactory(){
         uniqueIdentifier += 1
     }
     static func == (lhc:MemoryCard, rhc:MemoryCard) -> Bool{
-        return lhc.id == rhc.id
+        return lhc.number == rhc.number
+    }
+    enum cardStates {
+        case faceUp
+        case matched
+        case faceDown
+    }
+    private var number:Int = 0
+
+    // **************************************
+    // MARK: API
+    // **************************************
+    var id:Int
+    var state:cardStates
+    var designation: Int{
+        get{
+            return number
+        }
+        set (newValue) {
+            number = newValue
+        }
+    }
+    var description: String{
+        get {
+            return "Card \(id) with number \(self.number)"
+        }
     }
     
-    init(){
+    init(withDesignation:Int){
+        state = .faceDown
         id = MemoryCard.uniqueIdentifier
-        faceUp = false
-        matched = false
         MemoryCard.uniqueIdentifierFactory()
+        designation = withDesignation
     }
+
 }
