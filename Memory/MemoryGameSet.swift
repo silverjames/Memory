@@ -38,7 +38,7 @@ class MemoryGameSet {
     }
 
     func match(keys: [Int]) -> Bool{
-        var match = true
+        var match = false
         if keys.count == 2{
             if gameSet[keys[0]].designation == gameSet[keys[1]].designation {
                 match = true

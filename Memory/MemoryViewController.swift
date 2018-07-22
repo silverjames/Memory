@@ -66,8 +66,8 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         for subView in view.subviews{
             if subView is UIButton {
                 //button.backgroundColor = UIColor.clearColor()
-                subView.layer.cornerRadius = 10
-                subView.layer.borderWidth = 0.2
+                subView.layer.cornerRadius = 8
+                subView.layer.borderWidth = 0.4
                 subView.mask?.clipsToBounds = true
                 subView.layer.borderColor = UIColor.gray.cgColor
             } else{
@@ -83,6 +83,11 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         }
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        updateCounters()
+    }
+    
     //******************************
     //  MARK: button actions
     //******************************
@@ -92,7 +97,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         let cardButton = cardView.gameButtons.first(where: {$0.value == sender})
         let card = game?.gameSet.filter {$0.id == cardButton!.key}
         let idx = game?.gameSet.firstIndex(of: card![0])
-//        print ("touched card with id: \(cardButton!.key) and index \(idx!)")
+        game?.flipCount += 1
         
         switch selectedCards.count{
                 
@@ -115,10 +120,13 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 if game!.match(keys: indices){
                     print("cards matched!")
                     indices.forEach{game!.gameSet[$0].state = .matched}
+                    game?.matchCount += 1
+                    game?.score += Constants.matchPoints
                     amimateAndHideMatchedPair(keys: keys)
                     selectedCards.removeAll()
                 } else {
                     print("cards did not match!")
+                    game?.score += Constants.mismatchPoints
                     _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: {_ in self.turnBackCards(keys: keys, indices: indices)})
                 }
                 
@@ -126,11 +134,14 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 break
 
             }//switch
+        gameView.setNeedsLayout()
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
 //        _ = fillImageSet()
         game!.newGame(nbrOfCards: nbrOfCards)
+        updateCounters()
+        cardView.setNeedsLayout()
 //        shuffle()
         }
     
@@ -140,7 +151,6 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     //******************************
     
     private func amimateAndHideMatchedPair(keys: [Int]){
-
         keys.forEach {key in
             UIView.transition(with: self.cardView.gameButtons[key]!,
                               duration: 0.7, options: [.transitionCrossDissolve],
@@ -151,24 +161,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                                 self.cardView.gameButtons[key]!.isHidden = true
                                 self.cardView.gameButtons[key]!.alpha = 1
             })
-
         }
-        
-//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 0.0, options: [.curveEaseInOut],
-//                    animations: {
-//                        keys.forEach { key in
-//                            self.cardView.gameButtons[key]?.transform = CGAffineTransform.identity.scaledBy(x: 2.0, y: 2.0)
-//                        }},
-//                        completion: { finished in
-//                            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 1.0, options: [],
-//                                    animations: {
-//                                        keys.forEach{ key in
-//                                        self.cardView.gameButtons[key]?.transform = CGAffineTransform.identity.scaledBy(x: 0.1, y: 0.1)
-//                                        self.cardView.gameButtons[key]?.alpha = 0
-//                                        }
-//                            })
-//                })//first animation
-
     }// end func
     
     private func turnBackCards(keys: [Int], indices:[Int]) {
@@ -179,6 +172,12 @@ class MemoryViewController: UIViewController, cardViewDataSource {
             game!.gameSet[$0].state = .faceDown
         }
         selectedCards.removeAll()
+    }
+    
+    private func updateCounters(){
+        flipCountDisplay.text = "Flips: \(game!.flipCount)"
+        gameScore.text = "Score: \(game!.score)"
+        matchLabel.text = "Matches: \(game!.matchCount)"
     }
     
     private func fillImageSet() -> Int {
@@ -219,8 +218,8 @@ extension Int {
 }
 
 struct Constants {
-    static let mismatchPoints = -4
-    static let cheatPoints = -5
+    static let mismatchPoints = -2
+    static let matchPoints = 5
     static let deselectPoints = -1
 }
 
