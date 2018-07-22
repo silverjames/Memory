@@ -11,27 +11,12 @@ import Foundation
 
 class MemoryViewController: UIViewController, cardViewDataSource {
 
-    // **************************************
-    // MARK: protocol functions
-    // **************************************
-    func getGridDimensions() -> (cellCount: Int, aspectRatio: CGFloat) {
-            return (game!.gameSet.count, CGFloat(1.0))
-        }
-    func getCurrentDeck() -> [MemoryCard] {
-        return self.game!.gameSet
-    }
-    func getImageSet() -> [UIImage] {
-        return imageSet
-    }
-
     //******************************
     //  MARK: properties and outlets
     //******************************
-
-//    private var blankImage:UIImage? = nil
     private var game:MemoryGameSet? = nil
     private var imageSet:[UIImage] = []
-    private var selectedCards = [Int:UIButton]()
+    private var selectedCards = [Int:Int]() //key: card ID, value: card index in deck
     private var nbrOfCards:Int {
         get{
             return imageSet.count * 2
@@ -49,6 +34,19 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     @IBOutlet weak var matchLabel: UILabel!
     @IBOutlet weak var gameScore: UILabel!
 
+    // **************************************
+    // MARK: protocol functions
+    // **************************************
+    func getGridDimensions() -> (cellCount: Int, aspectRatio: CGFloat) {
+        return (game!.gameSet.count, CGFloat(1.0))
+    }
+    func getCurrentDeck() -> [MemoryCard] {
+        return self.game!.gameSet
+    }
+    func getImageSet() -> [UIImage] {
+        return imageSet
+    }
+
     //******************************
     //  MARK: lifecycle function overrides
     //******************************
@@ -56,6 +54,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         super.viewDidLoad()
 
         flipCountDisplay.text = nil
+        selectedCards.removeAll()
         let _ = fillImageSet()
 
         //initialize game with as many cards as we have
@@ -89,57 +88,50 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     //******************************
     @objc func touchCard(_ sender: UIButton) {
 
-        print ("card touched")
-
-        if selectedCards.contains(where: {$0.value == sender }){
-            selectedCards.remove(at: selectedCards.firstIndex(where: {$0.value == sender })!)
-            cardView.buttonFormatNotSelected(button: sender)
-            game!.score += Constants.deselectPoints
-//            updateScore()
-            
-        } else {
-            switch selectedCards.count{
+//      identify the specific card that was touched
+        let cardButton = cardView.gameButtons.first(where: {$0.value == sender})
+        let card = game?.gameSet.filter {$0.id == cardButton!.key}
+        let idx = game?.gameSet.firstIndex(of: card![0])
+//        print ("touched card with id: \(cardButton!.key) and index \(idx!)")
+        
+        switch selectedCards.count{
                 
             case 0:
-                let card = cardView.gameButtons.first(where: {$0.value == sender})!
-                selectedCards[card.key] = sender
-                game!.gameSet[card.key].state = .faceUp
-                cardView.buttonFormatSelected(button: sender, atIndex: card.key)
+                if cardButton != nil{
+                    selectedCards[cardButton!.key] = idx!
+                    game!.gameSet[idx!].state = .faceUp
+                    cardView.formatFaceUpCard(button: sender, atIndex: idx!)
+                }
                 
             case 1:
-                let card = cardView.gameButtons.first(where: {$0.value == sender})!
-                selectedCards[card.key] = sender
-                game!.gameSet[card.key].state = .faceUp
-                cardView.buttonFormatSelected(button: sender, atIndex: card.key)
+                if cardButton != nil{
+                    selectedCards[cardButton!.key] = idx
+                    game!.gameSet[idx!].state = .faceUp
+                    cardView.formatFaceUpCard(button: sender, atIndex: idx!)
+                }
                 
                 let keys = selectedCards.map({$0.key})
-                if game!.match(keys: keys){
+                let indices = selectedCards.map {$0.value}
+                if game!.match(keys: indices){
                     print("cards matched!")
-                    for id in keys{
-                        game!.gameSet[id].state = .matched
-                    }
-                    amimateAndHideMatchedPairs()
-//                    _ = Timer.scheduledTimer(withTimeInterval: 3, repeats: false, block: {_ in self.processMatch(matchSet: keys)})
+                    indices.forEach{game!.gameSet[$0].state = .matched}
+                    amimateAndHideMatchedPair(keys: keys)
+                    selectedCards.removeAll()
                 } else {
                     print("cards did not match!")
-//                    _ = Timer.scheduledTimer(withTimeInterval: 3, repeats: false, block: {_ in self.processMismatch(matchSet: keys)})
+                    _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: {_ in self.turnBackCards(keys: keys, indices: indices)})
                 }
                 
             default:
-                let keys = selectedCards.map({$0.key})
-                for id in keys{
-                    game!.gameSet[id].state = .faceDown
-                }//for
-                selectedCards.removeAll()
+                break
 
             }//switch
-        }//else
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
-        _ = fillImageSet()
+//        _ = fillImageSet()
         game!.newGame(nbrOfCards: nbrOfCards)
-        shuffle()
+//        shuffle()
         }
     
   
@@ -147,48 +139,50 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     //  MARK: class methods
     //******************************
     
-    private func amimateAndHideMatchedPairs(){
-//        print("about to hide the matched pairs")
-        for cardIndex in game!.gameSet.indices {
-            if game!.gameSet[cardIndex].state == .matched{
-                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 0.0, options: [.curveEaseInOut],
-                      animations: {
-                        self.cardView.gameButtons[cardIndex]!.transform = CGAffineTransform.identity.scaledBy(x: 2.0, y: 2.0)
-                        },
-                        completion: { _ in
-                            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 1.0, options: [],
-                                    animations: {
-                                        self.cardView.gameButtons[cardIndex]?.transform = CGAffineTransform.identity.scaledBy(x: 0.1, y: 0.1)
-                            })
-                })//first animation
+    private func amimateAndHideMatchedPair(keys: [Int]){
 
-//                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 5.0, options: [.curveEaseInOut],
-//                        animations: {
-//                            self.memoryButtons[cardIndex].alpha = 0
-//                        },
-//                        completion: { finished in
-//                            self.memoryButtons[cardIndex].isHidden  = true
-//                            self.memoryButtons[cardIndex].alpha = 1
-//                            self.memoryButtons[cardIndex].transform = .identity
-//                            }
-//                )//second animation
+        keys.forEach {key in
+            UIView.transition(with: self.cardView.gameButtons[key]!,
+                              duration: 0.7, options: [.transitionCrossDissolve],
+                              animations: {
+                                self.cardView.gameButtons[key]!.alpha = 0
+                                },
+                              completion: { finished in
+                                self.cardView.gameButtons[key]!.isHidden = true
+                                self.cardView.gameButtons[key]!.alpha = 1
+            })
 
-                
-                
-                
-                //                                    completion: { position in
-//                                        self.memoryButtons[cardIndex].setImage(self.blankImage, for: UIControl.State.normal)
-//                                        self.memoryButtons[cardIndex].alpha = 0
-//                                    })//end completion
-//
-//                            })//end completion
-            }// if match
-        }//for-loop
+        }
         
+//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 0.0, options: [.curveEaseInOut],
+//                    animations: {
+//                        keys.forEach { key in
+//                            self.cardView.gameButtons[key]?.transform = CGAffineTransform.identity.scaledBy(x: 2.0, y: 2.0)
+//                        }},
+//                        completion: { finished in
+//                            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.6, delay: 1.0, options: [],
+//                                    animations: {
+//                                        keys.forEach{ key in
+//                                        self.cardView.gameButtons[key]?.transform = CGAffineTransform.identity.scaledBy(x: 0.1, y: 0.1)
+//                                        self.cardView.gameButtons[key]?.alpha = 0
+//                                        }
+//                            })
+//                })//first animation
+
     }// end func
     
+    private func turnBackCards(keys: [Int], indices:[Int]) {
+        keys.forEach {
+            cardView.formatFaceDownCard(button: cardView.gameButtons[$0]!)
+        }
+        indices.forEach{
+            game!.gameSet[$0].state = .faceDown
+        }
+        selectedCards.removeAll()
+    }
+    
     private func fillImageSet() -> Int {
-        //  creates one entry for each image - would be nicer if I could find a way to iterate through the available images
+        //  MARK: creates one entry for each image - would be nicer if I could find a way to iterate through the available images
         imageSet.removeAll()
         imageSet.append(UIImage(named: "Bernhard")!)
         imageSet.append(UIImage(named: "Ildiko")!)

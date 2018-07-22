@@ -16,7 +16,7 @@ struct MemoryCard: Hashable {
         uniqueIdentifier += 1
     }
     static func == (lhc:MemoryCard, rhc:MemoryCard) -> Bool{
-        return lhc.number == rhc.number
+        return lhc.id == rhc.id
     }
     enum cardStates {
         case faceUp

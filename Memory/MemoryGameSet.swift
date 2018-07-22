@@ -38,13 +38,14 @@ class MemoryGameSet {
     }
 
     func match(keys: [Int]) -> Bool{
+        var match = true
         if keys.count == 2{
-            return gameSet[keys[0]] == gameSet[keys[1]]
-            }
-        else {
-            return false
+            if gameSet[keys[0]].designation == gameSet[keys[1]].designation {
+                match = true
             }
         }
+        return match
+    }
 
 }
 
