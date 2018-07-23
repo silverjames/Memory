@@ -22,9 +22,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
             return imageSet.count * 2
         }
     }
-
     @IBOutlet var gameView: UIView!
-    
     @IBOutlet weak var cardView: MemoryView!{
         didSet {
             cardView.delegate = self
@@ -38,7 +36,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     // MARK: protocol functions
     // **************************************
     func getGridDimensions() -> (cellCount: Int, aspectRatio: CGFloat) {
-        return (game!.gameSet.count, CGFloat(1.0))
+        return (game!.gameSet.count, CGFloat(Constants.defaultAspectRatio))
     }
     func getCurrentDeck() -> [MemoryCard] {
         return self.game!.gameSet
@@ -55,26 +53,19 @@ class MemoryViewController: UIViewController, cardViewDataSource {
 
         flipCountDisplay.text = nil
         selectedCards.removeAll()
-        let _ = fillImageSet()
-
-        //initialize game with as many cards as we have
-        game = MemoryGameSet(nbrOfCards)
-        
-        //get the images for the game loaded up
-
-        //make them look nice
-        for subView in view.subviews{
+        fillImageSet()  //get the images for the game loaded up
+        game = MemoryGameSet(nbrOfCards)   //initialize game with as many cards as we have
+       
+        for subView in view.subviews{  //make them look nice
             if subView is UIButton {
                 //button.backgroundColor = UIColor.clearColor()
                 subView.layer.cornerRadius = 8
                 subView.layer.borderWidth = 0.4
-                subView.mask?.clipsToBounds = true
                 subView.layer.borderColor = UIColor.gray.cgColor
             } else{
                 if subView is UILabel{
                     subView.layer.cornerRadius = 10
                     subView.layer.borderWidth = 0.2
-                    subView.mask?.clipsToBounds = true
                     subView.layer.borderColor = UIColor.gray.cgColor
                     subView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
 
@@ -97,7 +88,6 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         let cardButton = cardView.gameButtons.first(where: {$0.value == sender})
         let card = game?.gameSet.filter {$0.id == cardButton!.key}
         let idx = game?.gameSet.firstIndex(of: card![0])
-        game?.flipCount += 1
         
         switch selectedCards.count{
                 
@@ -106,28 +96,32 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                     selectedCards[cardButton!.key] = idx!
                     game!.gameSet[idx!].state = .faceUp
                     cardView.formatFaceUpCard(button: sender, atIndex: idx!)
+                    game?.flipCount += 1
                 }
                 
             case 1:
-                if cardButton != nil{
-                    selectedCards[cardButton!.key] = idx
-                    game!.gameSet[idx!].state = .faceUp
-                    cardView.formatFaceUpCard(button: sender, atIndex: idx!)
-                }
-                
-                let keys = selectedCards.map({$0.key})
-                let indices = selectedCards.map {$0.value}
-                if game!.match(keys: indices){
-                    print("cards matched!")
-                    indices.forEach{game!.gameSet[$0].state = .matched}
-                    game?.matchCount += 1
-                    game?.score += Constants.matchPoints
-                    amimateAndHideMatchedPair(keys: keys)
-                    selectedCards.removeAll()
-                } else {
-                    print("cards did not match!")
-                    game?.score += Constants.mismatchPoints
-                    _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: {_ in self.turnBackCards(keys: keys, indices: indices)})
+                if cardButton?.key != selectedCards.first?.key {//skip this if user clicked the one facteup card again (fool)
+                    if cardButton != nil  {
+                        selectedCards[cardButton!.key] = idx
+                        game!.gameSet[idx!].state = .faceUp
+                        cardView.formatFaceUpCard(button: sender, atIndex: idx!)
+                        game?.flipCount += 1
+                    }
+                    
+                    let keys = selectedCards.map({$0.key})
+                    let indices = selectedCards.map {$0.value}
+                    if game!.match(keys: indices){
+                        print("cards matched!")
+                        indices.forEach{game!.gameSet[$0].state = .matched}
+                        game?.matchCount += 1
+                        game?.score += Constants.matchPoints
+                        amimateAndHideMatchedPair(keys: keys)
+                        selectedCards.removeAll()
+                    } else {
+                        print("cards did not match!")
+                        game?.score += Constants.mismatchPoints
+                        _ = Timer.scheduledTimer(withTimeInterval: Constants.timerInterval, repeats: false, block: {_ in self.turnBackCards(keys: keys, indices: indices)})
+                    }
                 }
                 
             default:
@@ -138,13 +132,10 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
-//        _ = fillImageSet()
         game!.newGame(nbrOfCards: nbrOfCards)
         updateCounters()
         cardView.setNeedsLayout()
-//        shuffle()
         }
-    
   
     //******************************
     //  MARK: class methods
@@ -180,7 +171,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         matchLabel.text = "Matches: \(game!.matchCount)"
     }
     
-    private func fillImageSet() -> Int {
+    private func fillImageSet() {
         //  MARK: creates one entry for each image - would be nicer if I could find a way to iterate through the available images
         imageSet.removeAll()
         imageSet.append(UIImage(named: "Bernhard")!)
@@ -195,31 +186,15 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         imageSet.append(UIImage(named: "Thea")!)
         imageSet.append(UIImage(named: "Christina")!)
         imageSet.append(UIImage(named: "Kitty")!)
-
-//        shuffle()
-        return imageSet.count
     }
 
-    private func shuffle(){
-        var last = imageSet.count - 1
-        while last > 0 {
-            let rnd = last.arc4Random
-            imageSet.swapAt(last, rnd)
-            game?.gameSet.swapAt(last, rnd)
-            last -= 1
-        }
-    }
-
-}
-extension Int {
-    var arc4Random: Int {
-        return Int(arc4random_uniform(UInt32(self)))
-    }
 }
 
 struct Constants {
     static let mismatchPoints = -2
     static let matchPoints = 5
     static let deselectPoints = -1
+    static let defaultAspectRatio = 1.0
+    static let timerInterval = 1.2
 }
 
