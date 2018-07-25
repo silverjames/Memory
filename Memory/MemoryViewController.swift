@@ -102,8 +102,9 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                     game!.gameSet[idx!].state = .faceUp
                     cardView.formatFaceUpCard(button: sender, atIndex: idx!)
                     game?.flipCount += 1
+//                    finishGame() //MARK: debug
                 }
-                
+            
             case 1:
                 if cardButton?.key != selectedCards.first?.key {//skip this if user clicked the one facteup card again (fool)
                     if cardButton != nil  {
@@ -140,14 +141,18 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
-        game!.newGame(nbrOfCards: nbrOfCards)
-        updateCounters()
-        cardView.setNeedsLayout()
-        }
+            resetGame()
+    }
   
     //******************************
     //  MARK: class methods
     //******************************
+    
+    private func resetGame(){
+        game!.newGame(nbrOfCards: nbrOfCards)
+        updateCounters()
+        cardView.setNeedsLayout()
+    }
     
     private func amimateAndHideMatchedPair(keys: [Int]){
         keys.forEach {key in
@@ -185,9 +190,12 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         let labelWidth = self.view.bounds.width * 0.7
         let labelHeigth = self.view.bounds.height * 0.4
         let labelSize = CGSize(width: labelWidth, height: labelHeigth)
-        let labelOrigin = CGPoint(x: (self.view.bounds.width-labelWidth), y: (self.view.bounds.maxY-labelHeigth))
+        let labelOrigin = gameView.bounds.origin
         let labelFrame = CGRect(origin: labelOrigin, size: labelSize)
         let label = UILabel(frame: labelFrame)
+        label.center = gameView.center
+        label.adjustsFontSizeToFitWidth = true
+        label.textAlignment = .center
         label.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 0)
         label.alpha = 0
         gameView.addSubview(label)
@@ -196,6 +204,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         var attributes = [NSAttributedString.Key: Any?]()
         attributes = [.font:UIFont.preferredFont(forTextStyle: .body).withSize(88), .foregroundColor: #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), .strokeWidth: -4.0]
         label.attributedText = NSAttributedString(string:"Game Over", attributes:attributes as [NSAttributedString.Key : Any])
+
 
 
         animator = UIViewPropertyAnimator.init(duration: 5, curve: .easeOut, animations: {
@@ -214,6 +223,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 label.alpha = 0
                 }, completion:{finished in
                     label.removeFromSuperview()
+                    self.resetGame()
                     for subView in self.gameView.subviews{
                         if subView is UIStackView{
                             subView.alpha = 1
