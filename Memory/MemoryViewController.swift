@@ -121,7 +121,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                         indices.forEach{game!.gameSet[$0].state = .matched}
                         game?.matchCount += 1
                         game?.score += Constants.matchPoints
-                        amimateAndHideMatchedPair(keys: keys)
+                        cardView.amimateAndHideMatchedPair(keys: keys)
                         selectedCards.removeAll()
                         if gameFinished {
                             finishGame()
@@ -137,7 +137,6 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 break
 
             }//switch
-        gameView.setNeedsLayout()
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
@@ -153,21 +152,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         updateCounters()
         cardView.setNeedsLayout()
     }
-    
-    private func amimateAndHideMatchedPair(keys: [Int]){
-        keys.forEach {key in
-            UIView.transition(with: self.cardView.gameButtons[key]!,
-                              duration: 0.7, options: [.transitionCrossDissolve],
-                              animations: {
-                                self.cardView.gameButtons[key]!.alpha = 0
-                                },
-                              completion: { finished in
-                                self.cardView.gameButtons[key]!.isHidden = true
-                                self.cardView.gameButtons[key]!.alpha = 1
-            })
-        }
-    }// end func
-    
+        
     private func turnBackCards(keys: [Int], indices:[Int]) {
         keys.forEach {
             cardView.formatFaceDownCard(button: cardView.gameButtons[$0]!)
@@ -204,8 +189,6 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         var attributes = [NSAttributedString.Key: Any?]()
         attributes = [.font:UIFont.preferredFont(forTextStyle: .body).withSize(88), .foregroundColor: #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), .strokeWidth: -4.0]
         label.attributedText = NSAttributedString(string:"Game Over", attributes:attributes as [NSAttributedString.Key : Any])
-
-
 
         animator = UIViewPropertyAnimator.init(duration: 5, curve: .easeOut, animations: {
             [unowned self, label] in
