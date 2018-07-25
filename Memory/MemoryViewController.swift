@@ -22,6 +22,11 @@ class MemoryViewController: UIViewController, cardViewDataSource {
             return imageSet.count * 2
         }
     }
+    private var gameFinished: Bool {
+        return (nbrOfCards/2 == game?.matchCount) ?  true :  false
+    }
+    private var animator:UIViewPropertyAnimator!
+    
     @IBOutlet var gameView: UIView!
     @IBOutlet weak var cardView: MemoryView!{
         didSet {
@@ -117,6 +122,9 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                         game?.score += Constants.matchPoints
                         amimateAndHideMatchedPair(keys: keys)
                         selectedCards.removeAll()
+                        if gameFinished {
+                            finishGame()
+                        }
                     } else {
                         print("cards did not match!")
                         game?.score += Constants.mismatchPoints
@@ -169,6 +177,51 @@ class MemoryViewController: UIViewController, cardViewDataSource {
         flipCountDisplay.text = "Flips: \(game!.flipCount)"
         gameScore.text = "Score: \(game!.score)"
         matchLabel.text = "Matches: \(game!.matchCount)"
+    }
+    
+    private func finishGame(){
+
+        //create a message label
+        let labelWidth = self.view.bounds.width * 0.7
+        let labelHeigth = self.view.bounds.height * 0.4
+        let labelSize = CGSize(width: labelWidth, height: labelHeigth)
+        let labelOrigin = CGPoint(x: (self.view.bounds.width-labelWidth), y: (self.view.bounds.maxY-labelHeigth))
+        let labelFrame = CGRect(origin: labelOrigin, size: labelSize)
+        let label = UILabel(frame: labelFrame)
+        label.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 0)
+        label.alpha = 0
+        gameView.addSubview(label)
+
+        //create a message
+        var attributes = [NSAttributedString.Key: Any?]()
+        attributes = [.font:UIFont.preferredFont(forTextStyle: .body).withSize(88), .foregroundColor: #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), .strokeWidth: -4.0]
+        label.attributedText = NSAttributedString(string:"Game Over", attributes:attributes as [NSAttributedString.Key : Any])
+
+
+        animator = UIViewPropertyAnimator.init(duration: 5, curve: .easeOut, animations: {
+            [unowned self, label] in
+            label.alpha = 1
+            for subView in self.gameView.subviews{
+                if subView is UIStackView{
+                    subView.alpha = 0
+                }
+            }
+        })
+        
+        animator.addCompletion({finished in
+            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 2.0, delay: 0, options: .curveEaseOut, animations: {
+                [label] in
+                label.alpha = 0
+                }, completion:{finished in
+                    label.removeFromSuperview()
+                    for subView in self.gameView.subviews{
+                        if subView is UIStackView{
+                            subView.alpha = 1
+                        }
+                    }
+                })
+        })
+        animator.startAnimation()
     }
     
     private func fillImageSet() {
