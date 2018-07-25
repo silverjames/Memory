@@ -32,7 +32,14 @@ class MemoryView: UIView {
     override func layoutSubviews() {
         print ("mv:layoutSubviews")
         super.layoutSubviews()
-        updateViewFromModel()
+
+        if let _ = animator {
+            if !animator.isRunning {
+                updateViewFromModel()
+            }
+        } else{
+            updateViewFromModel()
+        }
     }
 
     //    *****************
@@ -103,4 +110,32 @@ class MemoryView: UIView {
                 button.setImage(image.stretchableImage(withLeftCapWidth: 0, topCapHeight: 0), for: UIControl.State.normal)
                 })
     }
+    
+    func amimateAndHideMatchedPair(keys: [Int]){
+        
+        animator = UIViewPropertyAnimator.init(duration: 3, curve: .easeOut, animations: {
+            [unowned self, keys] in
+            keys.forEach{
+                self.gameButtons[$0]?.transform = CGAffineTransform.identity.scaledBy(x: 0.001, y: 0.001)
+                self.gameButtons[$0]?.alpha = 0
+                }
+        })
+        
+        animator.startAnimation()
+
+//        keys.forEach {key in
+//            UIView.transition(with: self.gameButtons[key]!,
+//                              duration: 0.7, options: [.transitionCrossDissolve],
+//                              animations: {
+//                                self.gameButtons[key]!.alpha = 0
+//                                self.gameButtons[key]!.transform = CGAffineTransform.identity.scaledBy(x: 0.001, y: 0.001)
+//
+//            },
+//                              completion: { finished in
+//                                self.gameButtons[key]!.isHidden = true
+//                                self.gameButtons[key]!.alpha = 1
+//            })
+//        }
+    }// end func
+
 }
