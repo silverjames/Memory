@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F4D616C2109B4E5007D864F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F4D616B2109B4E5007D864F /* AudioToolbox.framework */; };
 		6F95810320FE5CE0002FE82D /* MemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F95810220FE5CE0002FE82D /* MemoryView.swift */; };
 		6F95810520FE5DA0002FE82D /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F95810420FE5DA0002FE82D /* Grid.swift */; };
 		6FD0411220B3E2210045BCC5 /* MemoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD0411120B3E2210045BCC5 /* MemoryCard.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F4D616B2109B4E5007D864F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		6F95810220FE5CE0002FE82D /* MemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryView.swift; sourceTree = "<group>"; };
 		6F95810420FE5DA0002FE82D /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		6FD0411120B3E2210045BCC5 /* MemoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCard.swift; sourceTree = "<group>"; };
@@ -37,17 +39,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F4D616C2109B4E5007D864F /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F4D616A2109B4E5007D864F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6F4D616B2109B4E5007D864F /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6FD5DAD320B1CE2200F48BEE = {
 			isa = PBXGroup;
 			children = (
 				6FD5DADE20B1CE2200F48BEE /* Memory */,
 				6FD5DADD20B1CE2200F48BEE /* Products */,
+				6F4D616A2109B4E5007D864F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};

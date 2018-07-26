@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import AVFoundation
 
 class MemoryViewController: UIViewController, cardViewDataSource {
 
@@ -17,6 +18,9 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     private var game:MemoryGameSet? = nil
     private var imageSet:[UIImage] = []
     private var cardPiles:[UIImageView] = []
+    private let tapSound = SystemSoundID(1105)
+    private let newGameSound = SystemSoundID(1108)
+    private let matchSound = SystemSoundID(1024)
     private var selectedCards = [Int:Int]() //key: card ID, value: card index in deck
     private var nbrOfCards:Int {
         get{
@@ -98,6 +102,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     @objc func touchCard(_ sender: UIButton) {
 
 //      identify the specific card that was touched
+        AudioServicesPlaySystemSound(tapSound)
         let cardButton = cardView.gameButtons.first(where: {$0.value == sender})
         let card = game?.gameSet.filter {$0.id == cardButton!.key}
         let idx = game?.gameSet.firstIndex(of: card![0])
@@ -126,6 +131,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                     let indices = selectedCards.map {$0.value}
                     if game!.match(keys: indices){
                         print("cards matched!")
+                        AudioServicesPlaySystemSound(matchSound)
                         indices.forEach{game!.gameSet[$0].state = .matched}
                         game?.matchCount += 1
                         game?.score += Constants.matchPoints
@@ -149,7 +155,8 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
-            resetGame()
+        AudioServicesPlaySystemSound(newGameSound)
+        resetGame()
     }
   
     //******************************
