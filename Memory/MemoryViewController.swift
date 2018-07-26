@@ -50,8 +50,8 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     func getImageSet() -> [UIImage] {
         return imageSet
     }
-    func getDiscardPileFrame() -> CGRect {
-        return cardPiles[1].frame
+    func getDiscardPile() -> UIImageView {
+        return cardPiles[1]
     }
 
     //******************************
@@ -129,7 +129,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                         indices.forEach{game!.gameSet[$0].state = .matched}
                         game?.matchCount += 1
                         game?.score += Constants.matchPoints
-                        cardView.amimateAndHideMatchedPair(keys: keys)
+                        cardView.amimateAndHideMatchedPair(keys: keys, cardIndex: indices)
                         selectedCards.removeAll()
                         if gameFinished {
                             finishGame()
@@ -159,6 +159,9 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     private func resetGame(){
         game!.newGame(nbrOfCards: nbrOfCards)
         updateCounters()
+        cardPiles.forEach{
+            $0.image = nil
+        }
         cardView.setNeedsLayout()
     }
         
@@ -223,7 +226,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                     }
                 })
         })
-        animator.startAnimation()
+        animator.startAnimation(afterDelay: 3.0)
     }
     
     private func fillImageSet() {

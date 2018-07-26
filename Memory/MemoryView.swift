@@ -12,7 +12,7 @@ protocol cardViewDataSource: class {
     func getGridDimensions() -> (cellCount: Int, aspectRatio: CGFloat)
     func getCurrentDeck() -> [MemoryCard]
     func getImageSet() -> [UIImage]
-    func getDiscardPileFrame() -> CGRect
+    func getDiscardPile() -> UIImageView
 }
 
 class MemoryView: UIView {
@@ -31,7 +31,7 @@ class MemoryView: UIView {
     //    MARK: lifecycle functions
     //    *****************
     override func layoutSubviews() {
-        print ("mv:layoutSubviews")
+//        print ("mv:layoutSubviews")
         super.layoutSubviews()
 
         if let _ = animator {
@@ -88,7 +88,6 @@ class MemoryView: UIView {
     }
     
     func formatFaceDownCard(button: UIButton){
-//        button.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         button.layer.cornerRadius = 14
         button.layer.borderWidth = 0.4
         button.mask?.clipsToBounds = true
@@ -112,19 +111,27 @@ class MemoryView: UIView {
                 })
     }
     
-    func amimateAndHideMatchedPair(keys: [Int]){
-        
+    func amimateAndHideMatchedPair(keys: [Int], cardIndex: [Int]){
+
         animator = UIViewPropertyAnimator.init(duration: 2.5, curve: .easeInOut, animations: {
             [unowned self, keys] in
             keys.forEach{
-                let dx = (self.delegate?.getDiscardPileFrame().origin.x)! - self.gameButtons[$0]!.frame.origin.x
-                let dy = (self.delegate?.getDiscardPileFrame().origin.y)! - self.gameButtons[$0]!.frame.origin.y
-                self.gameButtons[$0]?.transform = CGAffineTransform.identity.translatedBy(x: dx, y: dy).rotated(by: CGFloat.pi).scaledBy(x: 0.5, y: 0.5)
-                self.gameButtons[$0]?.alpha = 0
+                let dx = (self.delegate?.getDiscardPile().frame.origin.x)! - self.gameButtons[$0]!.frame.origin.x
+                let dy = (self.delegate?.getDiscardPile().frame.origin.y)! - self.gameButtons[$0]!.frame.origin.y
+                self.gameButtons[$0]?.transform = CGAffineTransform.identity.translatedBy(x: dx-25, y: dy-10).rotated(by: CGFloat.pi).scaledBy(x: 0.5, y: 0.5)
+                self.gameButtons[$0]?.alpha = 0.0
+                self.delegate?.getDiscardPile().alpha = 0.3
                 }
         })
         
-        animator.startAnimation()
+        animator.addCompletion({finished in
+            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.8, delay: 0, options: .curveEaseInOut, animations:{
+                self.delegate?.getDiscardPile().image = self.delegate!.getImageSet()[self.delegate!.getCurrentDeck()[cardIndex[0]].designation]
+                self.delegate?.getDiscardPile().alpha = 0.7
+            })
+        })
+        
+        self.animator.startAnimation()
 
     }// end func
 
