@@ -123,19 +123,6 @@ class MemoryView: UIView {
         
         animator.startAnimation()
 
-//        keys.forEach {key in
-//            UIView.transition(with: self.gameButtons[key]!,
-//                              duration: 0.7, options: [.transitionCrossDissolve],
-//                              animations: {
-//                                self.gameButtons[key]!.alpha = 0
-//                                self.gameButtons[key]!.transform = CGAffineTransform.identity.scaledBy(x: 0.001, y: 0.001)
-//
-//            },
-//                              completion: { finished in
-//                                self.gameButtons[key]!.isHidden = true
-//                                self.gameButtons[key]!.alpha = 1
-//            })
-//        }
     }// end func
 
 }

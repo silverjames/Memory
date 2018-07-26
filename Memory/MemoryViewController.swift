@@ -56,7 +56,10 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        flipCountDisplay.text = nil
+//        flipCountDisplay.text = nil
+//        matchLabel.text = nil
+//        gameScore.text = nil
+//
         selectedCards.removeAll()
         fillImageSet()  //get the images for the game loaded up
         game = MemoryGameSet(nbrOfCards)   //initialize game with as many cards as we have
@@ -137,6 +140,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 break
 
             }//switch
+        updateCounters()
     }//func
 
     @IBAction func newGame(_ sender: UIButton) {
