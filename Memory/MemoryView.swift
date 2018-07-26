@@ -12,6 +12,7 @@ protocol cardViewDataSource: class {
     func getGridDimensions() -> (cellCount: Int, aspectRatio: CGFloat)
     func getCurrentDeck() -> [MemoryCard]
     func getImageSet() -> [UIImage]
+    func getDiscardPileFrame() -> CGRect
 }
 
 class MemoryView: UIView {
@@ -113,10 +114,12 @@ class MemoryView: UIView {
     
     func amimateAndHideMatchedPair(keys: [Int]){
         
-        animator = UIViewPropertyAnimator.init(duration: 3, curve: .easeOut, animations: {
+        animator = UIViewPropertyAnimator.init(duration: 2.5, curve: .easeInOut, animations: {
             [unowned self, keys] in
             keys.forEach{
-                self.gameButtons[$0]?.transform = CGAffineTransform.identity.scaledBy(x: 0.001, y: 0.001)
+                let dx = (self.delegate?.getDiscardPileFrame().origin.x)! - self.gameButtons[$0]!.frame.origin.x
+                let dy = (self.delegate?.getDiscardPileFrame().origin.y)! - self.gameButtons[$0]!.frame.origin.y
+                self.gameButtons[$0]?.transform = CGAffineTransform.identity.translatedBy(x: dx, y: dy).rotated(by: CGFloat.pi).scaledBy(x: 0.5, y: 0.5)
                 self.gameButtons[$0]?.alpha = 0
                 }
         })

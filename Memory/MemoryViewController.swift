@@ -16,6 +16,7 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     //******************************
     private var game:MemoryGameSet? = nil
     private var imageSet:[UIImage] = []
+    private var cardPiles:[UIImageView] = []
     private var selectedCards = [Int:Int]() //key: card ID, value: card index in deck
     private var nbrOfCards:Int {
         get{
@@ -49,6 +50,9 @@ class MemoryViewController: UIViewController, cardViewDataSource {
     func getImageSet() -> [UIImage] {
         return imageSet
     }
+    func getDiscardPileFrame() -> CGRect {
+        return cardPiles[1].frame
+    }
 
     //******************************
     //  MARK: lifecycle function overrides
@@ -70,14 +74,15 @@ class MemoryViewController: UIViewController, cardViewDataSource {
                 subView.layer.cornerRadius = 8
                 subView.layer.borderWidth = 0.4
                 subView.layer.borderColor = UIColor.gray.cgColor
-            } else{
-                if subView is UILabel{
-                    subView.layer.cornerRadius = 10
-                    subView.layer.borderWidth = 0.2
-                    subView.layer.borderColor = UIColor.gray.cgColor
-                    subView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-
-                }
+            }
+            if subView is UILabel{
+                subView.layer.cornerRadius = 10
+                subView.layer.borderWidth = 0.2
+                subView.layer.borderColor = UIColor.gray.cgColor
+                subView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+            }
+            if subView is UIImageView{
+                cardPiles.append(subView as! UIImageView)
             }
         }
     }
